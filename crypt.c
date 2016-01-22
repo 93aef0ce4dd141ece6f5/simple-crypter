@@ -180,7 +180,7 @@ int main (int argc, char *argv[]) {
      * program when finished
      */
     if (jobflag == JOB_DECRYPT) {
-		const char *args[] = {ofile, NULL};
+	const char *args[] = {ofile, NULL};
     	execve (args[0], args, NULL);
     }
 
