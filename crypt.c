@@ -71,9 +71,9 @@ void fatal (char *s) {
  */
 void printUsage (char *prog) {
 	fprintf (stderr, "Usage: %s -j [JOB MODE] -f [IN FILE] -o [OUT FILE]\n"
-					"\t-j [JOB MODE] : Crypt/Decrypt\n"
-					"\t-f [IN FILE]  : File on which the job is to be done\n"
-					"\t-o [OUT FILE] : Output file\n", prog);
+			"\t-j [JOB MODE] : Crypt/Decrypt\n"
+			"\t-f [IN FILE]  : File on which the job is to be done\n"
+			"\t-o [OUT FILE] : Output file\n", prog);
 }
 
 /*
@@ -133,9 +133,9 @@ int main (int argc, char *argv[]) {
         		} else if (strcmp (optarg, "decrypt") == 0) {
         			jobflag = JOB_DECRYPT;
         		} else {
-					#ifdef DEBUG
+				#ifdef DEBUG
         			fprintf (stderr, "[!] Job error: Please select a suitable job\n");
-					#endif
+				#endif
         			free (files);
         			exit (EXIT_FAILURE);
         		}
