@@ -102,7 +102,11 @@ int runJob (pFiles f) {
 	 * one-by-one until the end 
 	 */
 	for (c = fgetc (f->infile), i = 0; c != EOF; i++, c = fgetc (f->infile)) {
+		#ifdef MULTI_KEY
 		fputc (c^key[i % sizeof (key)], f->outfile);
+		#elif SINGLE_KEY
+		fputc (c^XOR_KEY, f->outfile);
+		#endif
 	}
 
 	return i;
@@ -129,7 +133,7 @@ int main (int argc, char *argv[]) {
         		} else if (strcmp (optarg, "decrypt") == 0) {
         			jobflag = JOB_DECRYPT;
         		} else {
-					#if DEBUG
+					#ifdef DEBUG
         			fprintf (stderr, "[!] Job error: Please select a suitable job\n");
 					#endif
         			free (files);
