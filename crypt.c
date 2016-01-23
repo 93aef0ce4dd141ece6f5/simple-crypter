@@ -52,8 +52,8 @@ unsigned int key[] = {0x03, 0x12, 0x4d, 0xe3, 0x11, 0x6f};
  * output file handles
  */
 typedef struct _files {
-	FILE *infile;
-	FILE *outfile;
+    FILE *infile;
+    FILE *outfile;
 } Files, *pFiles;
 
 /*
@@ -61,103 +61,106 @@ typedef struct _files {
  */
 void fatal (char *s) {
 #ifdef DEBUG
-	fprintf (stderr, "[!] %s error: %s\n", s, strerror (errno));
-	exit (EXIT_FAILURE);
+    fprintf (stderr, "[!] %s error: %s\n", s, strerror (errno));
 #endif
+    exit (EXIT_FAILURE);
 }
 
 /*
  * print program usage
  */
 void printUsage (char *prog) {
-	fprintf (stderr, "Usage: %s -j [JOB MODE] -f [IN FILE] -o [OUT FILE]\n"
-			"\t-j [JOB MODE] : Crypt/Decrypt\n"
-			"\t-f [IN FILE]  : File on which the job is to be done\n"
-			"\t-o [OUT FILE] : Output file\n", prog);
+    fprintf (stderr, "Usage: %s -j [JOB MODE] -f [IN FILE] -o [OUT FILE]\n"
+                    "\t-j [JOB MODE] : Crypt/Decrypt\n"
+                    "\t-f [IN FILE]  : File on which the job is to be done\n"
+                    "\t-o [OUT FILE] : Output file\n", prog);
 }
 
 /*
  * function to initialize file struct
  */
 pFiles newFile (void) {
-	pFiles f = malloc (sizeof (*f));
-	if (f == NULL) {
-		fatal ("Initialize files struct");
-	}
+    pFiles f = malloc (sizeof (*f));
+    if (f == NULL) {
+        return f;
+    }
 
-	f->infile = NULL;
-	f->outfile = NULL;
+    f->infile = NULL;
+    f->outfile = NULL;
 
-	return f;
+    return f;
 }
 
 /*
  * function to de/crypt file
  */
 int runJob (pFiles f) {
-	int c, i;
+    int c, i;
 
-	/*
-	 * read and XRO each character
-	 * one-by-one until the end 
-	 */
-	for (c = fgetc (f->infile), i = 0; c != EOF; i++, c = fgetc (f->infile)) {
-		#ifdef MULTI_KEY
-		fputc (c^key[i % sizeof (key)], f->outfile);
-		#elif SINGLE_KEY
-		fputc (c^XOR_KEY, f->outfile);
-		#endif
-	}
+    /*
+     * read and XRO each character
+     * one-by-one until the end 
+     */
+    for (c = fgetc (f->infile), i = 0; c != EOF; i++, c = fgetc (f->infile)) {
+        #ifdef MULTI_KEY
+        fputc (c^key[i % sizeof (key)], f->outfile);
+        #elif SINGLE_KEY
+        fputc (c^XOR_KEY, f->outfile);
+        #endif
+    }
 
-	return i;
+    return i;
 }
 
 int main (int argc, char *argv[]) {
-	if (argc <= 1) {
-		printUsage (argv[0]);
-		exit (EXIT_FAILURE);
-	}
+    if (argc <= 1) {
+        printUsage (argv[0]);
+        exit (EXIT_FAILURE);
+    }
 
-	pFiles files = newFile();
+    pFiles files = newFile();
+    if (files == NULL) {
+        fatal ("Initialise files struct");
+    }
 
-	/*
-	 * parse options from command line
-	 */
-	int opt, jobflag;
-	char *ofile;
-	while ((opt = getopt (argc, argv, "j:f:o:")) != -1) {
+    /*
+     * parse options from command line
+     */
+    int opt, jobflag = 0;
+    char *ofile = NULL;
+    while ((opt = getopt (argc, argv, "j:f:o:")) != -1) {
         switch (opt) {
-        	case 'j':
-        		if (strcmp (optarg, "crypt") == 0) {
-        			jobflag = JOB_CRYPT;
-        		} else if (strcmp (optarg, "decrypt") == 0) {
-        			jobflag = JOB_DECRYPT;
-        		} else {
-				#ifdef DEBUG
-        			fprintf (stderr, "[!] Job error: Please select a suitable job\n");
-				#endif
-        			free (files);
-        			exit (EXIT_FAILURE);
-        		}
-        		break;
-        	case 'f':
-        		files->infile = fopen (optarg, "rb");
-        		if (files->infile == NULL) {
-        			free (files);
-        			fatal ("Infile");
-        		}
-        		break;
-        	case 'o':
-        		ofile = optarg;
-        		files->outfile = fopen (optarg, "wb");
-        		if (files->outfile == NULL) {
-        			free (files);
-        			fatal ("Outfile");
-        		}
-        		break;
+            case 'j':
+                if (strcmp (optarg, "crypt") == 0) {
+                    jobflag = JOB_CRYPT;
+                } else if (strcmp (optarg, "decrypt") == 0) {
+                    jobflag = JOB_DECRYPT;
+                } else {
+                    #ifdef DEBUG
+                    fprintf (stderr, "[!] Job error: Please select a suitable job\n");
+                    #endif
+                    free (files);
+                    exit (EXIT_FAILURE);
+                }
+                break;
+            case 'f':
+                files->infile = fopen (optarg, "rb");
+                if (files->infile == NULL) {
+                    free (files);
+                    fatal ("Infile");
+                }
+                break;
+            case 'o':
+                ofile = optarg;
+                files->outfile = fopen (optarg, "wb");
+                if (files->outfile == NULL) {
+                    free (files);
+                    fatal ("Outfile");
+                }
+                break;
             default:
                 printUsage (argv[0]);
-        		free (files);
+                free (files);
                 exit (EXIT_FAILURE);
         }
     }
@@ -180,9 +183,9 @@ int main (int argc, char *argv[]) {
      * program when finished
      */
     if (jobflag == JOB_DECRYPT) {
-	const char *args[] = {ofile, NULL};
-    	execve (args[0], args, NULL);
+        const char *args[] = {ofile, NULL};
+        execve (args[0], args, NULL);
     }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
