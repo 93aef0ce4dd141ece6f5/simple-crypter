@@ -223,10 +223,13 @@ int main (int argc, char *argv[]) {
         char *args[] = {ofile, NULL};
 
         #ifdef USE_CHMOD
-        CHMOD (ofile);
+        int err = CHMOD (ofile);
+        if (err == -1) {
+            fatal ("Change file mode");
+        }
         #endif
 
-        int err = execve (args[0], args, NULL);
+        err = execve (args[0], args, NULL);
         if (err == -1) {
             fatal ("Execute file");
         }
