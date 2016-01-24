@@ -1,8 +1,8 @@
 /*
  *
  * Author: 93aef0ce4dd141ece6f5
- * Description: Simple crypter using XOR to
- * 				obfuscate a binary
+ * Description: Simple scan-time crypter using
+ * 				XOR to obfuscate a binary
  *
  * GCC compile command:
  * gcc -Wall -Werror -o crypt crypt.c
