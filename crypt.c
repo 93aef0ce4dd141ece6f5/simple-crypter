@@ -27,6 +27,12 @@
  */
 #include <unistd.h>
 
+#ifdef __linux__
+#include <sys/stat.h>
+
+#define CHMOD(x) chmod((x), S_IRWXU)
+#endif
+
 /*
  * options for crypting method
  * SINGLE_KEY is less effective
@@ -200,7 +206,15 @@ int main (int argc, char *argv[]) {
      */
     if (jobflag == JOB_DECRYPT) {
         const char *args[] = {ofile, NULL};
-        execve (args[0], args, NULL);
+
+        #ifdef __linux__
+        CHMOD (ofile);
+        #endif
+
+        int err = execve (args[0], args, NULL);
+        if (err == -1) {
+            fatal ("Execute file");
+        }
     }
 
     return EXIT_SUCCESS;
