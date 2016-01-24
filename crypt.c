@@ -44,6 +44,8 @@
 #include <sys/stat.h>
 
 #define CHMOD(x) chmod((x), S_IRWXU)
+
+#define USE_CHMOD
 #endif
 
 /*
@@ -220,7 +222,7 @@ int main (int argc, char *argv[]) {
     if (jobflag == JOB_DECRYPT) {
         char *args[] = {ofile, NULL};
 
-        #ifdef __linux__
+        #ifdef USE_CHMOD
         CHMOD (ofile);
         #endif
 
