@@ -12,7 +12,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/*
+ * error handling
+ * errno variable defines
+ * error
+ */
 #include <errno.h>
+
+/*
+ * execve() used for 
+ * executing the decrypted
+ * file
+ */
 #include <unistd.h>
 
 /*
@@ -98,7 +110,7 @@ int runJob (pFiles f) {
     int c, i;
 
     /*
-     * read and XRO each character
+     * read and XOR each character
      * one-by-one until the end 
      */
     for (c = fgetc (f->infile), i = 0; c != EOF; i++, c = fgetc (f->infile)) {
@@ -109,6 +121,10 @@ int runJob (pFiles f) {
         #endif
     }
 
+    /*
+     * return the number of bytes
+     * read from the in file
+     */
     return i;
 }
 
