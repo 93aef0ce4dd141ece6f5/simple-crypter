@@ -27,6 +27,19 @@
  */
 #include <unistd.h>
 
+/*
+ * defining linux-environment-
+ * only instructions
+ * include sys/stat header
+ * for chmod function to
+ * allow decrypted file to
+ * be executable
+ * CHMOD(x) macro to replace
+ * all instances of it with
+ * proper chmod function
+ * x parameter will transfer
+ * over from macro to function
+ */
 #ifdef __linux__
 #include <sys/stat.h>
 
