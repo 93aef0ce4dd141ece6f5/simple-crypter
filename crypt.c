@@ -218,7 +218,7 @@ int main (int argc, char *argv[]) {
      * program when finished
      */
     if (jobflag == JOB_DECRYPT) {
-        const char *args[] = {ofile, NULL};
+        char *args[] = {ofile, NULL};
 
         #ifdef __linux__
         CHMOD (ofile);
