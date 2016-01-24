@@ -221,9 +221,10 @@ int main (int argc, char *argv[]) {
      */
     if (jobflag == JOB_DECRYPT) {
         char *args[] = {ofile, NULL};
-
+        int err;
+        
         #ifdef USE_CHMOD
-        int err = CHMOD (ofile);
+        err = CHMOD (ofile);
         if (err == -1) {
             fatal ("Change file mode");
         }
